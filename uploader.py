@@ -44,7 +44,7 @@ def Create_Service(client_secret_file, api_name, api_version, *scopes):
         print(e)
         return None
 
-def convert_to_RFC_datetime(year=1900, month=1, day=1, hour=0, minute=0):
+def convert_to_RFC_datetime(year=None, month=None, day=None, hour=None, minute=None):
     dt = datetime.datetime(year, month, day, hour, minute, 0).isoformat() + 'Z'
     return dt
 
@@ -68,19 +68,22 @@ service = Create_Service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
 
 request_body = {
     'snippet': {
-        'categoryId': 19,
-        'title': 'Upload Testing',
-        'description': 'Hello World Description',
+        'categoryId': 19, # list of categoryId => https://pastebin.com/raw/tZ7c4EXU
+        'title': 'Upload Testing ',
+        'description': 'Hello World . ',
         'tags': ['Travel', 'video test', 'Travel Tips']
     },
     'status': {
         'privacyStatus': 'private',
         
         'selfDeclaredMadeForKids': False, 
+       # 'publishAt': convert_to_RFC_datetime(year=, month=, day=, hour=, minute=), # if want to schedule the video set the date and time 
+
     },
     'notifySubscribers': True
 }
 
+#video upload
 mediaFile = MediaFileUpload(FILENAME)
 
 response_upload_video = service.videos().insert(
@@ -89,6 +92,7 @@ response_upload_video = service.videos().insert(
     media_body=mediaFile
 ).execute()
 
+#thumbnail upload
 
 response_upload_thumb= service.thumbnails().set(
     videoId=response_upload_video.get('id'),
